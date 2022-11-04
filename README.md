@@ -32,6 +32,14 @@ https://github.com/alexjoverm/typescript-library-starter
   正常请求一般是返回200-300（不包括300）之间的状态码，网络错误和超时status是0
 
 
+
+#### ts类需要明确指定原型截图
+
+https://github.com/Microsoft/TypeScript-wiki/blob/main/Breaking-Changes.md#extending-built-ins-linke-error-array-and-map-may-no-loger-work
+
+![image-20221105060959967](E:\code\study\ts-axios\assets\image-20221105060959967.png)
+
+
 ## 参考资料
 
 [XMLHttpRequest](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest)
