@@ -9,7 +9,7 @@ function getEntries () {
    * 3. 如果存在，将item_A作为键，app.ts的绝对路径作为值，放入对象中
    */
   // fs.readdirSync(__dirname) -> [ 'base', 'webpack.config.js' ]
-  fs.readdirSync(__dirname).reduce((entries, dir) => {
+  return fs.readdirSync(__dirname).reduce((entries, dir) => {
     const fullDir = path.join(__dirname, dir)
     const entry = path.join(fullDir, 'app.ts')
     // fs.statSync(entry).isDirectory() 判断路径是否是文件夹
@@ -21,6 +21,7 @@ function getEntries () {
     return entries
   }, {})
 }
+
 module.exports = {
   mode: 'development',
   entry: getEntries(),
