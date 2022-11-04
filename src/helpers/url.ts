@@ -1,5 +1,4 @@
-import { isObject } from 'lodash'
-import { isDate } from './util'
+import { isPlainObject, isDate } from './util'
 
 const encode = (val: string): string => {
   return encodeURIComponent(val)
@@ -38,7 +37,17 @@ export function buildURL(url: string, params?: any) {
     values.forEach((value: unknown) => {
       if (isDate(value)) {
         value = value.toISOString()
-      } else if (isObject(value)) {
+      }
+      // todo: 这里用isPlainObject合适吗？
+      // 如果不是普通对象，例如这里是数组怎么办？
+      // axios({
+      //   method: 'get',
+      //   url: '/base/get?foo=bar',
+      //   params: {
+      //     bar: [[1],2,3]
+      //   }
+      // })
+      else if (isPlainObject(value)) {
         value = JSON.stringify(value)
       }
       tempValues.push(`${encode(key)}=${encode(value as string)}`)

@@ -13,9 +13,10 @@ export type Method =
   | 'DELETE'
   | 'options'
   | 'OPTIONS'
-export interface axiosRequestConfig {
+export interface AxiosRequestConfig {
   url: string
   method?: Method
   data?: any
   params?: any
+  headers?: any
 }
