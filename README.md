@@ -20,6 +20,18 @@ https://github.com/alexjoverm/typescript-library-starter
 - 保留url上已存在的参数
 
 
+
+### 请求错误的情况
+
+- 网络异常错误
+
+- 网络超时
+
+- 处理非200状态码
+
+  正常请求一般是返回200-300（不包括300）之间的状态码，网络错误和超时status是0
+
+
 ## 参考资料
 
 [XMLHttpRequest](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest)
