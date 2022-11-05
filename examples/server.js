@@ -90,34 +90,45 @@ function registerErrorRouter () {
   })
 }
 
-function registerExtendRouter(){
-  router.get('/extend/get',(req,res)=>{
+function registerExtendRouter () {
+  router.get('/extend/get', (req, res) => {
     res.json({
-      msg:'hello world'
+      msg: 'hello world'
     })
   })
 
-  router.options('/extend/options',(req,res)=>{
+  router.options('/extend/options', (req, res) => {
     res.end()
   })
 
-  router.delete('/extend/delete',(req,res)=>{
+  router.delete('/extend/delete', (req, res) => {
     res.end()
   })
 
-  router.head('/extend/head',(req,res)=>{
+  router.head('/extend/head', (req, res) => {
     res.end()
   })
 
-  router.post('/extend/post',(req,res)=>{
+  router.post('/extend/post', (req, res) => {
     res.json(req.body)
   })
 
-  router.put('/extend/put',(req,res)=>{
+  router.put('/extend/put', (req, res) => {
     res.json(req.body)
   })
 
-  router.patch('/extend/patch',(req,res)=>{
+  router.patch('/extend/patch', (req, res) => {
     res.json(req.body)
+  })
+
+  router.get('/extend/user', (req, res) => {
+    res.json({
+      code: 0,
+      message: 'ok',
+      result: {
+        name: 'jack',
+        age: 18
+      }
+    })
   })
 }
