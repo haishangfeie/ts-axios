@@ -1,12 +1,19 @@
 import axios from '../../src/index'
 
-// axios({
-//   method: 'post',
-//   url: '/extend/post',
-//   data: {
-//     msg: 'hi'
-//   }
-// })
+axios({
+  method: 'post',
+  url: '/extend/post',
+  data: {
+    msg: '只有config'
+  }
+})
+
+axios('/extend/post', {
+  method: 'post',
+  data: {
+    msg: 'url+config'
+  }
+})
 
 // axios.request({
 //   url: '/extend/post',
@@ -16,16 +23,16 @@ import axios from '../../src/index'
 //   }
 // })
 
-axios.get('/extend/get')
+// axios.get('/extend/get')
 
-axios.options('/extend/options')
+// axios.options('/extend/options')
 
-axios.delete('/extend/delete')
+// axios.delete('/extend/delete')
 
-axios.head('/extend/head')
+// axios.head('/extend/head')
 
-axios.post('/extend/post', { msg: 'post' })
+// axios.post('/extend/post', { msg: 'post' })
 
-axios.put('/extend/put', { msg: 'put' })
+// axios.put('/extend/put', { msg: 'put' })
 
-axios.patch('/extend/patch', { msg: 'patch' })
+// axios.patch('/extend/patch', { msg: 'patch' })
