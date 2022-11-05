@@ -1,36 +1,15 @@
-import { transformRequest, transformResponse } from './helpers/data'
-import { processHeader } from './helpers/header'
-import { buildURL } from './helpers/url'
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types/index'
-import xhr from './xhr'
+import Axios from './core/Axios'
+import { extend } from './helpers/util'
+import { AxiosInstance } from './types'
 
-export default function axios(config: AxiosRequestConfig): AxiosPromise {
-  processConfig(config)
-  return xhr(config).then(res => transformResponseData(res))
+function createInstance(): AxiosInstance {
+  const context = new Axios()
+  // 按照我的理解，const instance = Axios.prototype.request.bind(context)是等价的
+  const instance = context.request.bind(context)
+  extend(instance, context)
+  return instance as AxiosInstance
 }
 
-function processConfig(config: AxiosRequestConfig) {
-  config.url = transformURL(config)
-  // 这个必须要在transformRequestData前调用，因为transformRequestData可以改写data
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
-}
+const axios = createInstance()
 
-function transformURL(config: AxiosRequestConfig) {
-  const { url, params } = config
-  return buildURL(url, params)
-}
-
-function transformRequestData(config: AxiosRequestConfig) {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: AxiosRequestConfig) {
-  const { headers, data } = config
-  return processHeader(headers, data)
-}
-
-function transformResponseData(resoponse: AxiosResponse): AxiosResponse {
-  resoponse.data = transformResponse(resoponse.data)
-  return resoponse
-}
+export default axios

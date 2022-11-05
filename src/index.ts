@@ -1,5 +1,5 @@
-import Axios from './axios'
+import axios from './axios'
 
 export * from './types'
 
-export default Axios
+export default axios
