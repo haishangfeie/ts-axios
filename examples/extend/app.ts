@@ -59,6 +59,8 @@ async function test() {
     if (user) {
       console.log(user.result.age)
     }
-  } catch (error) {}
+  } catch (error) {
+    // do nothing
+  }
 }
 test()

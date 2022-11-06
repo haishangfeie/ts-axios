@@ -1,7 +1,7 @@
-import { transformRequest, transformResponse } from '../helpers/data'
-import { flattenHeaders, processHeader } from '../helpers/header'
+import { flattenHeaders } from '../helpers/header'
 import { buildURL } from '../helpers/url'
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types/index'
+import transform from './transform'
 import xhr from './xhr'
 
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
@@ -12,9 +12,8 @@ export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromis
 
 function processConfig(config: AxiosRequestConfig) {
   config.url = transformURL(config)
-  // 这个必须要在transformRequestData前调用，因为transformRequestData可以改写data
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
+  // 这里内部默认行为是会调用processHeader，这个方法是要求外部保证headers是对象，且存在的，这里之所以可以确保headers存在，是因为进入这里之前合并了默认项，而默认项里headers是存在的。但是如果传入了headers是null这时headers就不存在了
+  config.data = transform(config.data, config.headers, config.transformRequest)
   config.headers = flattenHeaders(config.headers, config.method!)
 }
 
@@ -23,16 +22,7 @@ function transformURL(config: AxiosRequestConfig) {
   return buildURL(url!, params)
 }
 
-function transformRequestData(config: AxiosRequestConfig) {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: AxiosRequestConfig) {
-  const { headers, data } = config
-  return processHeader(headers, data)
-}
-
-function transformResponseData(resoponse: AxiosResponse): AxiosResponse {
-  resoponse.data = transformResponse(resoponse.data)
-  return resoponse
+function transformResponseData(response: AxiosResponse): AxiosResponse {
+  response.data = transform(response.data, response.headers, response.config.transformResponse)
+  return response
 }
