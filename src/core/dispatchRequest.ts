@@ -6,7 +6,8 @@ import xhr from './xhr'
 
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
-  return xhr(config).then(res => transformResponseData(res))
+  const promise = xhr(config).then(res => transformResponseData(res))
+  return promise
 }
 
 function processConfig(config: AxiosRequestConfig) {
