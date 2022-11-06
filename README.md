@@ -37,7 +37,7 @@ https://github.com/alexjoverm/typescript-library-starter
 
 https://github.com/Microsoft/TypeScript-wiki/blob/main/Breaking-Changes.md#extending-built-ins-linke-error-array-and-map-may-no-loger-work
 
-![image-20221105060959967](E:\code\study\ts-axios\assets\image-20221105060959967.png)
+![image-20221105060959967](assets/image-20221105060959967.png)
 
 
 ## 参考资料
