@@ -23,6 +23,8 @@ export interface AxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+
+  [propName: string]: any
 }
 
 export interface AxiosResponse<T = any> {
@@ -50,6 +52,8 @@ export interface Interceptors {
 }
 
 export interface Axios {
+  defaults: AxiosRequestConfig
+
   interceptors: Interceptors
 
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>

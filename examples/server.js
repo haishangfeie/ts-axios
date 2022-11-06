@@ -26,15 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const router = express.Router()
 
-registerSimpleRouter()
-
-registerBaseRouter()
-
-registerErrorRouter()
-
-registerExtendRouter()
-
-registerInterceptorRouter()
+registerRouter()
 
 app.use(router)
 
@@ -139,4 +131,19 @@ function registerInterceptorRouter () {
   router.get('/interceptor/get', (req, res) => {
     res.end('hello')
   })
+}
+
+function registerConfigRouter () {
+  router.post('/config/post', (req, res) => {
+    res.json(req.body)
+  })
+}
+
+function registerRouter () {
+  registerSimpleRouter()
+  registerBaseRouter()
+  registerErrorRouter()
+  registerExtendRouter()
+  registerInterceptorRouter()
+  registerConfigRouter()
 }

@@ -1,13 +1,7 @@
-import {
-  AxiosPromise,
-  AxiosRequestConfig,
-  AxiosResponse,
-  Interceptors,
-  RejectedFn,
-  ResolvedFn
-} from '../types'
+import { AxiosPromise, AxiosRequestConfig, Interceptors, RejectedFn, ResolvedFn } from '../types'
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './interceptorManager'
+import mergeConfig from './mergeConfig'
 
 interface PromiseChain<T> {
   resolved: ResolvedFn<T> | typeof dispatchRequest
@@ -15,12 +9,14 @@ interface PromiseChain<T> {
 }
 
 export default class Axios {
+  defaults: AxiosRequestConfig
   interceptors: Interceptors
-  constructor() {
+  constructor(initConfig: AxiosRequestConfig) {
     this.interceptors = {
       request: new InterceptorManager(),
       response: new InterceptorManager()
     }
+    this.defaults = initConfig
   }
   request(url: any, config?: any): AxiosPromise {
     if (typeof url === 'string') {
@@ -31,6 +27,9 @@ export default class Axios {
     } else {
       config = url
     }
+
+    config = mergeConfig(this.defaults, config)
+
     const chain: PromiseChain<any>[] = [
       {
         resolved: dispatchRequest,

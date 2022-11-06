@@ -1,9 +1,10 @@
 import Axios from './core/Axios'
+import defaults from './defaults'
 import { extend } from './helpers/util'
-import { AxiosInstance } from './types'
+import { AxiosInstance, AxiosRequestConfig } from './types'
 
-function createInstance(): AxiosInstance {
-  const context = new Axios()
+function createInstance(config: AxiosRequestConfig): AxiosInstance {
+  const context = new Axios(config)
   // 按照我的理解，const instance = Axios.prototype.request.bind(context)是等价的
   // todo: 这里是不是绑定到instance会更好？
   const instance = context.request.bind(context)
@@ -11,6 +12,6 @@ function createInstance(): AxiosInstance {
   return instance as AxiosInstance
 }
 
-const axios = createInstance()
+const axios = createInstance(defaults)
 
 export default axios
