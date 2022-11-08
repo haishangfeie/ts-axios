@@ -29,6 +29,8 @@ export interface AxiosRequestConfig {
 
   cancelToken?: CancelToken
 
+  withCredentials?: boolean
+
   [propName: string]: any
 }
 
