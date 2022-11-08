@@ -5,7 +5,15 @@ import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from '../types'
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
     // 如果data是URLSearchParams对象或者FormData，浏览器是可以自动设置合适的content-type的
-    const { data = null, method = 'GET', url = '', headers, responseType, timeout } = config
+    const {
+      data = null,
+      method = 'GET',
+      url = '',
+      headers,
+      responseType,
+      timeout,
+      cancelToken
+    } = config
     const request = new XMLHttpRequest()
 
     if (responseType) {
@@ -57,6 +65,15 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       }
     })
 
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        request.abort()
+        reject(reason)
+      })
+    }
+
+    request.send(data)
+
     function handleResponse(response: AxiosResponse): void {
       const { status } = response.request
 
@@ -74,7 +91,5 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         )
       }
     }
-
-    request.send(data)
   })
 }
