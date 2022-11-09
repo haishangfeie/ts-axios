@@ -23,87 +23,11 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       onUploadProgress
     } = config
     const request = new XMLHttpRequest()
-
-    if (responseType) {
-      request.responseType = responseType
-    }
-
-    if (timeout) {
-      request.timeout = timeout
-    }
-
-    if (withCredentials) {
-      request.withCredentials = withCredentials
-    }
-
     request.open(method.toUpperCase(), url, true)
-
-    request.onreadystatechange = function handleLoad() {
-      const { status, readyState, statusText } = request
-      if (readyState !== 4) {
-        return
-      }
-      // 超时或者网络异常时会为0，这个在别的地方处理了，这里直接return
-      if (status === 0) {
-        return
-      }
-      const responseHeaders = parseHeaders(request.getAllResponseHeaders())
-      const responseData = request.responseType === 'text' ? request.responseText : request.response
-      const response: AxiosResponse = {
-        data: responseData,
-        config,
-        request,
-        headers: responseHeaders,
-        status,
-        statusText
-      }
-      handleResponse(response)
-    }
-
-    request.onerror = function handleError() {
-      reject(createError('Network Error', config, null, request))
-    }
-
-    // 超时触发
-    request.ontimeout = function handleTimeout() {
-      reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
-    }
-    if (withCredentials || isURLSameOrigin(url)) {
-      if (xsrfCookieName) {
-        const val = cookie.read(xsrfCookieName)
-        if (val && xsrfHeaderName) {
-          headers[xsrfHeaderName] = val
-        }
-      }
-    }
-
-    if (onDownloadProgress) {
-      request.onprogress = onDownloadProgress
-    }
-
-    if (onUploadProgress) {
-      request.upload.onprogress = onUploadProgress
-    }
-
-    if (isFormData(headers.data)) {
-      delete headers['Content-Type']
-    }
-
-    Object.keys(headers).forEach(name => {
-      if (data === null && name.toLowerCase() === 'content-type') {
-        delete headers[name]
-      } else {
-        request.setRequestHeader(name, headers[name])
-      }
-    })
-
-    if (cancelToken) {
-      cancelToken.promise.then(reason => {
-        request.abort()
-        reject(reason)
-      })
-    }
-
+    configureRequest()
+    addEvents()
+    processHeaders()
+    processCancel()
     request.send(data)
 
     function handleResponse(response: AxiosResponse): void {
@@ -121,6 +45,94 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
             response
           )
         )
+      }
+    }
+
+    function configureRequest(): void {
+      if (responseType) {
+        request.responseType = responseType
+      }
+
+      if (timeout) {
+        request.timeout = timeout
+      }
+
+      if (withCredentials) {
+        request.withCredentials = withCredentials
+      }
+    }
+
+    function addEvents(): void {
+      request.onreadystatechange = function handleLoad() {
+        const { status, readyState, statusText } = request
+        if (readyState !== 4) {
+          return
+        }
+        // 超时或者网络异常时会为0，这个在别的地方处理了，这里直接return
+        if (status === 0) {
+          return
+        }
+        const responseHeaders = parseHeaders(request.getAllResponseHeaders())
+        const responseData =
+          request.responseType === 'text' ? request.responseText : request.response
+        const response: AxiosResponse = {
+          data: responseData,
+          config,
+          request,
+          headers: responseHeaders,
+          status,
+          statusText
+        }
+        handleResponse(response)
+      }
+
+      request.onerror = function handleError() {
+        reject(createError('Network Error', config, null, request))
+      }
+
+      // 超时触发
+      request.ontimeout = function handleTimeout() {
+        reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
+      }
+
+      if (onDownloadProgress) {
+        request.onprogress = onDownloadProgress
+      }
+
+      if (onUploadProgress) {
+        request.upload.onprogress = onUploadProgress
+      }
+    }
+
+    function processHeaders(): void {
+      if (withCredentials || isURLSameOrigin(url)) {
+        if (xsrfCookieName) {
+          const val = cookie.read(xsrfCookieName)
+          if (val && xsrfHeaderName) {
+            headers[xsrfHeaderName] = val
+          }
+        }
+      }
+
+      if (isFormData(data)) {
+        delete headers['Content-Type']
+      }
+
+      Object.keys(headers).forEach(name => {
+        if (data === null && name.toLowerCase() === 'content-type') {
+          delete headers[name]
+        } else {
+          request.setRequestHeader(name, headers[name])
+        }
+      })
+    }
+
+    function processCancel(): void {
+      if (cancelToken) {
+        cancelToken.promise.then(reason => {
+          request.abort()
+          reject(reason)
+        })
       }
     }
   })
