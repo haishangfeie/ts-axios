@@ -42,3 +42,7 @@ export function deepMerge(...args: any[]) {
 
   return result
 }
+
+export function isFormData(val: unknown): val is FormData {
+  return val instanceof FormData
+}

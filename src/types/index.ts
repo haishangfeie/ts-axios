@@ -34,6 +34,9 @@ export interface AxiosRequestConfig {
   xsrfCookieName?: string
   xsrfHeaderName?: string
 
+  onDownloadProgress?: Progress
+  onUploadProgress?: Progress
+
   [propName: string]: any
 }
 
@@ -139,4 +142,8 @@ export interface Cancel {
 
 export interface CancelStatic {
   new (message?: string): Cancel
+}
+
+export interface Progress {
+  (e: ProgressEvent): void
 }
