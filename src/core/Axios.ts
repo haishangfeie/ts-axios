@@ -50,16 +50,16 @@ export default class Axios {
     return promise
   }
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithData('get', url, config)
+    return this._requestMethodWithoutData('get', url, config)
   }
   head(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithData('head', url, config)
+    return this._requestMethodWithoutData('head', url, config)
   }
   delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithData('delete', url, config)
+    return this._requestMethodWithoutData('delete', url, config)
   }
   options(url: string, config?: AxiosRequestConfig): AxiosPromise {
-    return this._requestMethodWithData('options', url, config)
+    return this._requestMethodWithoutData('options', url, config)
   }
 
   post(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise {
