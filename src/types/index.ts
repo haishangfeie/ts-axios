@@ -37,6 +37,8 @@ export interface AxiosRequestConfig {
   onDownloadProgress?: Progress
   onUploadProgress?: Progress
 
+  auth?: AxiosBasicCredentials
+
   [propName: string]: any
 }
 
@@ -146,4 +148,9 @@ export interface CancelStatic {
 
 export interface Progress {
   (e: ProgressEvent): void
+}
+
+export interface AxiosBasicCredentials {
+  username: string
+  password: string
 }
