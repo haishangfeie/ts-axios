@@ -1,5 +1,6 @@
 import axios from '../../src/index'
-
+import 'nprogress/nprogress.css'
+import Nprogress from 'nprogress'
 // document.cookie = 'a=b'
 
 // axios.get('/more/get').then(res => {
@@ -18,10 +19,88 @@ import axios from '../../src/index'
 //     console.log('res', res)
 //   })
 
-const instance = axios.create({
-  xsrfCookieName:'XSRF-TOKEN-D',
-  xsrfHeaderName:'X-XSRF-TOKEN-D'
+// const instance = axios.create({
+//   xsrfCookieName:'XSRF-TOKEN-D',
+//   xsrfHeaderName:'X-XSRF-TOKEN-D'
+// })
+// instance.get('/more/get').then(res => {
+//   console.log('res', res)
+// })
+
+const instance2 = axios.create({
+  timeout: 10000
 })
-instance.get('/more/get').then(res => {
-  console.log('res', res)
+
+function calculatePercentage(loaded: number, total: number) {
+  return Math.floor(loaded * 1.0) / total
+}
+
+function loadProgressBar() {
+  const setupStartProgress = () => {
+    instance2.interceptors.request.use(config => {
+      Nprogress.start()
+      return config
+    })
+  }
+  const setupUpdateProgress = () => {
+    const update = (e: ProgressEvent) => {
+      console.log(e)
+      Nprogress.set(calculatePercentage(e.loaded, e.total))
+    }
+    instance2.defaults.onDownloadProgress = update
+    instance2.defaults.onUploadProgress = update
+  }
+
+  const setupStopProgress = () => {
+    instance2.interceptors.response.use(
+      res => {
+        Nprogress.done()
+        return res
+      },
+      error => {
+        Nprogress.done()
+        return Promise.reject(error)
+      }
+    )
+  }
+  setupStartProgress()
+  setupUpdateProgress()
+  setupStopProgress()
+}
+loadProgressBar()
+
+const downloadEl = document.querySelector('#download')
+downloadEl!.addEventListener('click', e => {
+  instance2
+    .get('/more/download', {
+      responseType: 'blob'
+    })
+    .then(res => {
+      const { data, headers } = res
+      const match = headers['content-disposition'].match(new RegExp('(^|;\\s*)(filename=)([^;]*)'))
+      const fileName = match ? match[3] : 'unknow'
+
+      // 此处当返回json文件时需要先对data进行JSON.stringify处理，其他类型文件不用做处理
+      //const blob = new Blob([JSON.stringify(data)], ...)
+      const blob = new Blob([data], { type: headers['content-type'] })
+      let dom = document.createElement('a')
+      let url = window.URL.createObjectURL(blob)
+      dom.href = url
+      dom.download = decodeURI(fileName)
+      dom.style.display = 'none'
+      document.body.appendChild(dom)
+      dom.click()
+      dom.parentNode!.removeChild(dom)
+      window.URL.revokeObjectURL(url)
+    })
+})
+
+const uploadEl = document.querySelector('#upload')
+uploadEl!.addEventListener('click', e => {
+  const data = new FormData()
+  const fileEl = document.querySelector('#file') as HTMLInputElement
+  if (fileEl.files) {
+    data.append('file', fileEl.files[0])
+    instance2.post('/more/upload', data)
+  }
 })

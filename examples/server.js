@@ -5,6 +5,9 @@ const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const webpackConfig = require('./webpack.config')
 const cookieParser = require('cookie-parser')
+const multipart = require('connect-multiparty')
+const path = require('path')
+const fs = require("fs")
 
 require('./server2')
 
@@ -31,6 +34,10 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
+
+app.use(multipart({
+  uploadDir: path.resolve(__dirname, 'upload-file')
+}))
 
 const router = express.Router()
 
@@ -163,6 +170,21 @@ function registerCancelRouter () {
 function registerMoreRouter () {
   router.get('/more/get', (req, res) => {
     res.json(req.cookies)
+  })
+  router.get("/more/download", function (req, res) {
+    const filePath = path.resolve(__dirname, "./download/download-img.jpeg")
+    const fileName = "scenery.jpeg"
+
+    res.set({
+      "content-type": "application/force-download",
+      "content-disposition": "attachment;filename=" + encodeURI(fileName)
+    })
+
+    fs.createReadStream(filePath).pipe(res)
+  })
+  router.post('/more/upload', (req, res) => {
+    console.log(req.body, req.files)
+    res.end('upload success')
   })
 }
 
