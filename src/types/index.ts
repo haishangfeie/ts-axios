@@ -37,6 +37,8 @@ export interface AxiosRequestConfig {
   onDownloadProgress?: Progress
   onUploadProgress?: Progress
 
+  validateStatus?: (status: number) => boolean
+
   auth?: AxiosBasicCredentials
 
   [propName: string]: any
