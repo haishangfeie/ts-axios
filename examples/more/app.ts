@@ -1,4 +1,4 @@
-import axios from '../../src/index'
+import axios, { AxiosRequestConfig } from '../../src/index'
 import 'nprogress/nprogress.css'
 import Nprogress from 'nprogress'
 import qs from 'qs'
@@ -186,11 +186,42 @@ import qs from 'qs'
 //     console.log('res', res)
 //   })
 
-const instance4 = axios.create({
-  baseURL: 'https://dummyimage.com/'
-})
-instance4.get('120x600')
+// const instance4 = axios.create({
+//   baseURL: 'https://dummyimage.com/'
+// })
+// instance4.get('120x600')
 
-instance4.get('https://api.thecatapi.com/v1/images/search?limit=1', {
-  timeout: 5000
+// instance4.get('https://api.thecatapi.com/v1/images/search?limit=1', {
+//   timeout: 5000
+// })
+
+function getA() {
+  return axios.get('/more/getA')
+}
+function getB() {
+  return axios.get('/more/getB')
+}
+
+axios.all([getA(), getB()]).then(
+  axios.spread(function(resA, resB) {
+    console.log(resA.data)
+    console.log(resB.data)
+  })
+)
+
+axios.all([getA(), getB()]).then(([resA, resB]) => {
+  console.log(resA.data)
+  console.log(resB.data)
 })
+
+const fakeConfig: AxiosRequestConfig = {
+  baseURL: 'https://www.baidu.com/',
+  url: '/user/12345',
+  params: {
+    idClient: 1,
+    idTest: 2,
+    testString: 'thisIsATest'
+  }
+}
+
+console.log(axios.getUri(fakeConfig))
