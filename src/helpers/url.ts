@@ -1,4 +1,4 @@
-import { isPlainObject, isDate } from './util'
+import { isPlainObject, isDate, isURLSearchParams } from './util'
 
 interface URLOrigin {
   protocol: string
@@ -16,7 +16,7 @@ const encode = (val: string): string => {
     .replace(/%5D/gi, ']')
 }
 
-export function buildURL(url: string, params?: any) {
+export function buildURL(url: string, params?: any, paramsSerializer?: (params: any) => string) {
   const hashIndex = url.indexOf('#')
   if (hashIndex > -1) {
     url = url.slice(0, hashIndex)
@@ -24,42 +24,49 @@ export function buildURL(url: string, params?: any) {
   if (!params) {
     return url
   }
-  const tempValues: string[] = []
+  let serializatedParams
+  if (paramsSerializer) {
+    serializatedParams = paramsSerializer(params)
+  } else if (isURLSearchParams(params)) {
+    serializatedParams = params.toString()
+  } else {
+    const tempValues: string[] = []
 
-  Object.keys(params).forEach(key => {
-    let values = params[key]
+    Object.keys(params).forEach(key => {
+      let values = params[key]
 
-    if (values === null || values === undefined) {
-      return
-    }
-
-    if (Array.isArray(values)) {
-      key += '[]'
-    } else {
-      values = [values]
-    }
-
-    values.forEach((value: unknown) => {
-      if (isDate(value)) {
-        value = value.toISOString()
+      if (values === null || values === undefined) {
+        return
       }
-      // todo: 这里用isPlainObject合适吗？
-      // 如果不是普通对象，例如这里是数组怎么办？
-      // axios({
-      //   method: 'get',
-      //   url: '/base/get?foo=bar',
-      //   params: {
-      //     bar: [[1],2,3]
-      //   }
-      // })
-      else if (isPlainObject(value)) {
-        value = JSON.stringify(value)
+
+      if (Array.isArray(values)) {
+        key += '[]'
+      } else {
+        values = [values]
       }
-      tempValues.push(`${encode(key)}=${encode(value as string)}`)
+
+      values.forEach((value: unknown) => {
+        if (isDate(value)) {
+          value = value.toISOString()
+        }
+        // todo: 这里用isPlainObject合适吗？
+        // 如果不是普通对象，例如这里是数组怎么办？
+        // axios({
+        //   method: 'get',
+        //   url: '/base/get?foo=bar',
+        //   params: {
+        //     bar: [[1],2,3]
+        //   }
+        // })
+        else if (isPlainObject(value)) {
+          value = JSON.stringify(value)
+        }
+        tempValues.push(`${encode(key)}=${encode(value as string)}`)
+      })
     })
-  })
 
-  const serializatedParams = tempValues.join('&')
+    serializatedParams = tempValues.join('&')
+  }
 
   if (serializatedParams) {
     url += (url.indexOf('?') === -1 ? '?' : '&') + serializatedParams

@@ -46,3 +46,7 @@ export function deepMerge(...args: any[]) {
 export function isFormData(val: unknown): val is FormData {
   return val instanceof FormData
 }
+
+export function isURLSearchParams(val: unknown): val is URLSearchParams {
+  return val instanceof URLSearchParams
+}
