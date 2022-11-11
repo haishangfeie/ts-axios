@@ -147,41 +147,50 @@ import qs from 'qs'
 //     console.log(error.message)
 //   })
 
-axios
-  .get('/more/get', {
-    params: new URLSearchParams('a=b&c=d')
-  })
-  .then(res => {
-    console.log('res', res)
-  })
+// axios
+//   .get('/more/get', {
+//     params: new URLSearchParams('a=b&c=d')
+//   })
+//   .then(res => {
+//     console.log('res', res)
+//   })
 
-axios
-  .get('/more/get', {
-    params: {
-      a: 1,
-      b: 2,
-      c: ['a', 'b', 'c']
-    }
-  })
-  .then(res => {
-    console.log('res', res)
-  })
+// axios
+//   .get('/more/get', {
+//     params: {
+//       a: 1,
+//       b: 2,
+//       c: ['a', 'b', 'c']
+//     }
+//   })
+//   .then(res => {
+//     console.log('res', res)
+//   })
 
-const instance3 = axios.create({
-  paramsSerializer(params) {
-    return qs.stringify(params, {
-      arrayFormat: 'brackets'
-    })
-  }
+// const instance3 = axios.create({
+//   paramsSerializer(params) {
+//     return qs.stringify(params, {
+//       arrayFormat: 'brackets'
+//     })
+//   }
+// })
+// instance3
+//   .get('/more/get', {
+//     params: {
+//       a: 1,
+//       b: 2,
+//       c: ['a', 'b', 'c']
+//     }
+//   })
+//   .then(res => {
+//     console.log('res', res)
+//   })
+
+const instance4 = axios.create({
+  baseURL: 'https://dummyimage.com/'
 })
-instance3
-  .get('/more/get', {
-    params: {
-      a: 1,
-      b: 2,
-      c: ['a', 'b', 'c']
-    }
-  })
-  .then(res => {
-    console.log('res', res)
-  })
+instance4.get('120x600')
+
+instance4.get('https://api.thecatapi.com/v1/images/search?limit=1', {
+  timeout: 5000
+})
