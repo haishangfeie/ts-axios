@@ -1,4 +1,4 @@
-import axios, { AxiosError, Canceler } from '../../src/index'
+import axios, { Canceler } from '../../src/index'
 
 const CancelToken = axios.CancelToken
 const source = CancelToken.source()
@@ -11,7 +11,7 @@ axios({
   .then(res => {
     console.log(`res:`, res)
   })
-  .catch((error: AxiosError) => {
+  .catch(error => {
     if (axios.isCancel(error)) {
       console.log('Request canceled', error.message)
     }
@@ -29,7 +29,7 @@ setTimeout(() => {
     .then(res => {
       console.log(`res:`, res)
     })
-    .catch((error: AxiosError) => {
+    .catch(error => {
       if (axios.isCancel(error)) {
         console.log(error.message)
       }
@@ -45,7 +45,7 @@ axios({
   .then(res => {
     console.log(`res:`, res)
   })
-  .catch((error: AxiosError) => {
+  .catch(error => {
     if (axios.isCancel(error)) {
       console.log('Request canceled-2', error.message)
     }
