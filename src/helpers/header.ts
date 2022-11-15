@@ -13,7 +13,7 @@ function nomalizatedHeaderName(headers: any, nomalizatedName: string): any {
   })
 }
 
-export function processHeader(headers: any, data: any): any {
+export function processHeaders(headers: any, data: any): any {
   // headers是必须要有值的，而这个由外部调用的地方保证
   nomalizatedHeaderName(headers, 'Content-Type')
   if (isPlainObject(data)) {
