@@ -14,10 +14,10 @@ function nomalizatedHeaderName(headers: any, nomalizatedName: string): any {
 }
 
 export function processHeaders(headers: any, data: any): any {
-  // headers是必须要有值的，而这个由外部调用的地方保证
+  // headers是必须要有值的，否则什么都不做
   nomalizatedHeaderName(headers, 'Content-Type')
   if (isPlainObject(data)) {
-    if (!headers['Content-Type']) {
+    if (headers && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json;charset=utf-8'
     }
   }
@@ -31,14 +31,12 @@ export function parseHeaders(headers: string): Record<string, any> {
   }
   const lines = headers.split('\r\n')
   lines.forEach(line => {
-    let [key, value] = line.split(':')
+    let [key, ...vals] = line.split(':')
     key = key.trim().toLowerCase()
     if (!key) {
       return
     }
-    if (value) {
-      value = value.trim()
-    }
+    let value = vals.join(':').trim()
     parsed[key] = value
   })
   return parsed
