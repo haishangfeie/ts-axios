@@ -7,7 +7,15 @@ import xhr from './xhr'
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   throwIfCancellationRequested(config)
   processConfig(config)
-  const promise = xhr(config).then(res => transformResponseData(res))
+  const promise = xhr(config).then(
+    res => transformResponseData(res),
+    e => {
+      if (e && e.response) {
+        e.response = transformResponseData(e.response)
+      }
+      return Promise.reject(e)
+    }
+  )
   return promise
 }
 
